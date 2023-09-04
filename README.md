@@ -32,7 +32,7 @@ This involves describing data to better understand it. Through this understandin
 
 -   *Lab2-ExploratoryDataAnalysis.R*
 
--   *Lab3-DataImputation.R*
+-   [*Lab3-DataImputation.R*](/Lab3-DataImputation.R)
 
 ## Step 4: Data Transformation
 
