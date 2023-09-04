@@ -17,41 +17,87 @@
 # *****************************************************************************
 
 # Introduction ----
-# Data imputation, also known as missing data imputation, is a technique used in data analysis and statistics to fill in missing values in a dataset. Missing data can occur due to various reasons, such as equipment malfunction, human error, or non-response in surveys.
+# Data imputation, also known as missing data imputation, is a technique used
+# in data analysis and statistics to fill in missing values in a dataset.
+# Missing data can occur due to various reasons, such as equipment malfunction,
+# human error, or non-response in surveys.
 
-# Imputing missing data is important because many statistical analysis methods and machine learning algorithms require complete datasets to produce accurate and reliable results. By filling in the missing values, data imputation helps to preserve the integrity and usefulness of the dataset.
+# Imputing missing data is important because many statistical analysis methods
+# and Machine Learning algorithms require complete datasets to produce accurate
+# and reliable results. By filling in the missing values, data imputation helps
+# to preserve the integrity and usefulness of the dataset.
 
-# 1. Mean/median imputation: This method involves replacing missing values with the mean or median value of the available data for that variable. It is a simple and quick approach but does not consider any relationships between variables.
+## Data Imputation Methods ----
 
-# Unlike the recorded values, mean-imputed values do not include natural variance. Therefore, they are less “scattered” and would technically minimize the standard error in a linear regression. We would perceive our estimates to be more accurate than they actually are in real-life.
+### 1. Mean/Median Imputation ----
 
-# 2. Regression imputation: In this approach, missing values are estimated by regressing the variable with missing values on other variables that are known. The estimated values are then used to fill in the missing values.
+# This method involves replacing missing values with the mean or median value
+# of the available data for that variable. It is a simple and quick approach
+# but does not consider any relationships between variables.
 
-# 3. Multiple imputation: Multiple imputation involves creating several plausible imputations for each missing value based on statistical models that capture the relationships between variables. This technique recognizes the uncertainty associated with imputing missing values.
+# Unlike the recorded values, mean-imputed values do not include natural
+# variance. Therefore, they are less “scattered” and would technically minimize
+# the standard error in a linear regression. We would perceive our estimates to
+# be more accurate than they actually are in real-life.
 
-# 4. Machine learning-based imputation: Machine learning algorithms can be used to predict missing values based on the patterns and relationships present in the available data. Techniques such as k-nearest neighbors (KNN) imputation or decision tree-based imputation can be employed.
+### 2. Regression Imputation ----
+# In this approach, missing values are estimated by regressing the variable
+# with missing values on other variables that are known. The estimated values
+# are then used to fill in the missing values.
 
-# 5. Hot deck imputation
-# This method involves finding similar cases (referred to as donors) that have complete data and using their values to impute missing values in other cases (referred to as recipients).
+### 3. Multiple Imputation ----
+# Multiple imputation involves creating several plausible imputations for each
+# missing value based on statistical models that capture the relationships
+# between variables. This technique recognizes the uncertainty associated with
+# imputing missing values.
 
-# 6. Multiple Imputation by Chained Equations (MICE)
-# MICE is flexible and can handle different variable types at once (e.g., continuous, binary, ordinal etc.). For each variable containing missing values, we can use the remaining information in the data to create a model that predicts what could have been recorded to fill in the blanks. To account for the statistical uncertainty in the imputations, the MICE procedure goes through several rounds and computes replacements for missing values in each round. As the name suggests, we thus fill in the missing values multiple times and create several complete datasets before we pool the results to arrive at more realistic results.
+### 4. Machine Learning-Based Imputation ----
+# Machine learning algorithms can be used to predict missing values based on
+# the patterns and relationships present in the available data. Techniques such
+# as k-nearest neighbors (KNN) imputation or decision tree-based imputation can
+# be employed.
 
-# etc.
+### 5. Hot Deck Imputation ----
+# This method involves finding similar cases (referred to as donors) that have
+# complete data and using their values to impute missing values in other cases
+# (referred to as recipients).
 
+### 6. Multiple Imputation by Chained Equations (MICE) ----
+# MICE is flexible and can handle different variable types at once (e.g.,
+# continuous, binary, ordinal etc.). For each variable containing missing
+# values, we can use the remaining information in the data to create a model
+# that predicts what could have been recorded to fill in the blanks.
+# To account for the statistical uncertainty in the imputations, the MICE
+# procedure goes through several rounds and computes replacements for missing
+# values in each round. As the name suggests, we thus fill in the missing
+# values multiple times and create several complete datasets before we pool the
+# results to arrive at more realistic results.
 
-# Types of missing data:
-# 1. Missing not at random (MNAR):
-# Locations of missing values in the dataset depend on the missing values themselves. For example, students submitting a course evaluation tend to report positive or neutral responses and skip questions that will result in a negative response. Such students may systematically leave the following question blank because they are uncomfortable giving a bad rating for their lecturer: “Classes started and ended on time”.
+## Types of Missing Data ----
+### 1. Missing Not At Random (MNAR) ----
+# Locations of missing values in the dataset depend on the missing values
+# themselves. For example, students submitting a course evaluation tend to
+# report positive or neutral responses and skip questions that will result in a
+# negative response. Such students may systematically leave the following
+# question blank because they are uncomfortable giving a bad rating for their
+# lecturer: “Classes started and ended on time”.
 
+### 2. Missing At Random (MAR) ----
+# Locations of missing values in the dataset depend on some other observed
+# data. In the case of course evaluations, students who are not certain about a
+# response may feel unable to give accurate responses on a numeric scale, for
+# example, the question "I developed my oral and writing skills " may be
+# difficult to measure on a scale of 1-5. Subsequently, if such questions are
+# optional, they rarely get a response because it depends on another unobserved
+# mechanism: in this case, the individual need for more precise
+# self-assessments.
 
-# 2. Missing at random (MAR):
-# Locations of missing values in the dataset depend on some other observed data. In the case of course evaluations, students who are not certain about a response may feel unable to give accurate responses on a numeric scale, for example, the question "I developed my oral and writing skills " may be difficult to measure on a scale of 1-5. Subsequently, if such questions are optional, they rarely get a response because it depends on another unobserved mechanism: in this case, the individual need for more precise self-assessments.
+### 3. Missing Completely At Random (MCAR) ----
+# In this case, the locations of missing values in the dataset are purely
+# random and they do not depend on any other data.
 
-# 3. Missing completely at random (MCAR)
-# In this case, the locations of missing values in the dataset are purely random and they do not depend on any other data.
-
-# In all the above cases, removing the entire response  because one question has missing data may distort the results to the positive.
+# In all the above cases, removing the entire response  because one question
+# has missing data may distort the results.
 
 # If the data are MAR or MNAR, imputing missing values is advisable.
 
@@ -120,89 +166,114 @@ if (!is.element("languageserver", installed.packages()[, 1])) {
 }
 require("languageserver")
 
-# The NHANES package needs to be installed and loaded
-# Documentation of NHANES: https://cran.r-project.org/web/packages/NHANES/NHANES.pdf
-install.packages("NHANES")
-library(NHANES)
-library(dplyr)
+# The US National Health and Nutrition Examination Study (NHANES) Package ----
 
-#make a selection
-nhanes_long <- NHANES %>% select(Age,AgeDecade,Education,Poverty,Work,LittleInterest,Depressed,BMI,Pulse,BPSysAve,BPDiaAve,DaysPhysHlthBad,PhysActiveDays)
-#select 500 random indices
-rand_ind <- sample(1:nrow(nhanes_long),500)
-nhanes <- nhanes_long[rand_ind,]
+# Documentation of NHANES:
+#   https://cran.r-project.org/web/packages/NHANES/NHANES.pdf
+if (!is.element("NHANES", installed.packages()[, 1])) {
+  install.packages("NHANES", dependencies = TRUE)
+}
+require("NHANES")
+
+if (!is.element("dplyr", installed.packages()[, 1])) {
+  install.packages("dplyr", dependencies = TRUE)
+}
+require("dplyr")
+
+
+# Make a selection
+nhanes_long <- NHANES %>% select(Age, AgeDecade, Education, Poverty, Work,
+                                 LittleInterest, Depressed, BMI, Pulse,
+                                 BPSysAve, BPDiaAve, DaysPhysHlthBad,
+                                 PhysActiveDays)
+# Select 500 random indices
+rand_ind <- sample(seq_len(nrow(nhanes_long)), 500)
+nhanes <- nhanes_long[rand_ind, ]
 
 
 # We also need the naniar package
-# Documentation of naniar: https://www.rdocumentation.org/packages/naniar/versions/0.0.4.9000
+# Documentation of naniar:
+#   https://www.rdocumentation.org/packages/naniar/versions/1.0.0
 
-install.packages("naniar")
-library(naniar)
+if (!is.element("naniar", installed.packages()[, 1])) {
+  install.packages("naniar", dependencies = TRUE)
+}
+require("naniar")
 
 # Are there missing values in the dataset?
 any_na(nhanes)
 # How many?
 n_miss(nhanes)
+# What percentage?
 prop_miss(nhanes)
 # Which variables are affected?
 nhanes %>% is.na() %>% colSums()
 
-# Get number of missings per variable (n and %)
+# Get number of missing values per variable (n and %)
 miss_var_summary(nhanes)
 miss_var_table(nhanes)
-# Get number of missings per participant (n and %)
+# Get number of missing values per participant (n and %)
 miss_case_summary(nhanes)
 miss_case_table(nhanes)
 
-# Which variables contain the most missing variables?
+# Which variables contain the most missing values?
 gg_miss_var(nhanes)
 
-
-
-# Where are missings located?
-vis_miss(nhanes) + theme(axis.text.x = element_text(angle=80))
-
+if (!is.element("ggplot2", installed.packages()[, 1])) {
+  install.packages("ggplot2", dependencies = TRUE)
+}
+require("ggplot2")
+# Where are missing values located?
+vis_miss(nhanes) + theme(axis.text.x = element_text(angle = 80))
 
 # Which combinations of variables occur to be missing together?
 gg_miss_upset(nhanes)
 
-# Get a heatmap of missingness broken down by age
+# Create a heatmap of missingness broken down by age
 is.factor(nhanes$AgeDecade)
 gg_miss_fct(nhanes, fct = AgeDecade)
 
 nhanes <- nhanes %>% mutate(MaP = BPDiaAve + 1/3*(BPSysAve - BPDiaAve))
 
+if (!is.element("mice", installed.packages()[, 1])) {
+  install.packages("mice", dependencies = TRUE)
+}
+require("mice")
 
-install.packages("mice")
-library(mice)
-
-# To arrive at good predictions for each of the target variable containing missing values, we save the variables that are at least somewhat correlated (r > 0.25) with it.
+# To arrive at good predictions for each of the target variable containing
+# missing values, we save the variables that are at least somewhat correlated
+# (r > 0.25) with it.
 pred_mat <- quickpred(nhanes, mincor = 0.25)
 
 
-#mice
-nhanes_multimp <- mice(nhanes, m=10,meth='pmm', seed = 5, predictorMatrix = pred_mat)
+# mice
+nhanes_multimp <- mice(nhanes, m=10,meth='pmm',
+                       seed = 5, predictorMatrix = pred_mat)
 
 
-#with  
+# with
 lm_multimp <- with(nhanes_multimp, lm(MaP ~ BMI + PhysActiveDays))
-#pool
+# pool
 lm_pooled <- pool(lm_multimp)
-#analyse pooled results - does the confidence interval include both directions? 
+# analyse pooled results - does the confidence interval include both directions?
 summary(lm_pooled, conf.int = TRUE, conf.level = 0.95)
-
-
 
 stripplot(nhanes_multimp,
           MaP ~ BMI | .imp,
           pch = 20, cex = 1)
 
 # create imputed data to work with
-df<-mice::complete(nhanes_multimp,1)
+df <- mice::complete(nhanes_multimp, 1)
 
 miss_var_summary(df)
-missmap(nhanes)
-missmap(Soybean, col=c("red", "grey"), legend=TRUE)
+
+if (!is.element("Amelia", installed.packages()[, 1])) {
+  install.packages("Amelia", dependencies = TRUE)
+}
+require("Amelia")
+Amelia::missmap(nhanes)
+
+Amelia::missmap(Soybean, col = c("red", "grey"), legend = TRUE)
 
 # Random Sample ====
 # Create a random sample from the dataset
