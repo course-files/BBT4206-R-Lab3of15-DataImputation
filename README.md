@@ -38,7 +38,7 @@ This involves describing data to better understand it. Through this understandin
 
 This involves finding useful features that represent the data according to the goal of addressing the problem defined. In doing so, the structure of the data and the prediction problem is exposed to data mining algorithms. Finding useful attributes/features can also be done through dimensionality reduction (identifying the most significant and uncorrelated attributes). This can be performed by a data analyst.
 
--   [*Lab4-ExposingTheStructureOfDataUsingDataTransforms.R*](/Lab4-ExposingTheStructureOfDataUsingDataTransforms.R)
+-   *Lab4-ExposingTheStructureOfDataUsingDataTransforms.R*
 
 ## Step 5: Selection of the Data Mining Task
 
