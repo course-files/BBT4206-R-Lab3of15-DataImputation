@@ -394,6 +394,7 @@ renv::snapshot()
 ## StatLib CMU. (1997). Boston Housing [Dataset]. StatLib Carnegie Mellon University. http://lib.stat.cmu.edu/datasets/boston_corrected.txt # nolint ----
 
 # **Required Lab Work Submission** ----
+
 ## Part A ----
 # Create a new file called
 # "Lab4-Submission-ExposingTheStructureOfDataUsingDataTransforms.R".
