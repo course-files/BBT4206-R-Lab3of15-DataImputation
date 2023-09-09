@@ -54,7 +54,7 @@
 ### 4. Machine Learning-Based Imputation ----
 # Machine learning algorithms can be used to predict missing values based on
 # the patterns and relationships present in the available data. Techniques such
-# as k-nearest neighbors (KNN) imputation or decision tree-based imputation can
+# as K-Nearest Neighbours (KNN) imputation or decision tree-based imputation can
 # be employed.
 
 ### 5. Hot Deck Imputation ----
@@ -65,7 +65,7 @@
 ### 6. Multiple Imputation by Chained Equations (MICE) ----
 # MICE is flexible and can handle different variable types at once (e.g.,
 # continuous, binary, ordinal etc.). For each variable containing missing
-# values, we can use the remaining information in the data to create a model
+# values, we can use the remaining information in the data to train a model
 # that predicts what could have been recorded to fill in the blanks.
 # To account for the statistical uncertainty in the imputations, the MICE
 # procedure goes through several rounds and computes replacements for missing
@@ -119,8 +119,8 @@ require("renv")
 # Use renv::init() to initialize renv in a new or existing project.
 
 # The prompt received after executing renv::init() is as shown below:
-# This project already has a lockfile. What would you like to do?
 
+# This project already has a lockfile. What would you like to do?
 # 1: Restore the project from the lockfile.
 # 2: Discard the lockfile and re-initialize the project.
 # 3: Activate the project without snapshotting or installing any packages.
@@ -142,6 +142,8 @@ renv::init()
 # packages, using either:
 # install.packages() and update.packages or
 # renv::install() and renv::update()
+renv::update()
+renv::install()
 
 # You can also clean up a project by removing unused packages using the
 # following command: renv::clean()
@@ -149,6 +151,7 @@ renv::init()
 # After you have confirmed that your code works as expected, use
 # renv::snapshot() to record the packages and their
 # sources in the lockfile.
+renv::snapshot()
 
 # Later, if you need to share your code with someone else or run your code on
 # a new machine, your collaborator (or you) can call renv::restore() to
@@ -166,33 +169,82 @@ if (!is.element("languageserver", installed.packages()[, 1])) {
 }
 require("languageserver")
 
-# The US National Health and Nutrition Examination Study (NHANES) Package ----
+# STEP 1. Load the Required Dataset ----
+# The dataset we will use (for educational purposes) is the US National Health
+# and Nutrition Examination Study (NHANES) dataset created from 1999 to 2004.
 
 # Documentation of NHANES:
-#   https://cran.r-project.org/web/packages/NHANES/NHANES.pdf
+#   https://cran.r-project.org/package=NHANES or
+#   https://cran.r-project.org/web/packages/NHANES/NHANES.pdf or
+#   http://www.cdc.gov/nchs/nhanes.htm
+
+# This requires the "NHANES" package available in R
+
 if (!is.element("NHANES", installed.packages()[, 1])) {
   install.packages("NHANES", dependencies = TRUE)
 }
 require("NHANES")
+
+## The "dplyr" Package ----
+# We will also require the "dplyr" package
+
+# "dplyr" is a grammar of *data manipulation*, providing a consistent set of
+# verbs that help you solve the most common data manipulation challenges:
+#   mutate() adds new variables that are functions of existing variables
+#   select() picks variables based on their names.
+#   filter() picks cases based on their values.
+#   summarise() reduces multiple values down to a single summary.
+#   arrange() changes the ordering of the rows.
+
+# Documentation of "dplyr":
+#   https://cran.r-project.org/package=dplyr or
+#   https://github.com/tidyverse/dplyr
 
 if (!is.element("dplyr", installed.packages()[, 1])) {
   install.packages("dplyr", dependencies = TRUE)
 }
 require("dplyr")
 
+## The Pipe Operator in the "dplyr" Package ----
+# In R, the %>% symbol represents the pipe operator.
+# The pipe operator is used for chaining or piping operations together in a
+# way that enhances the readability and maintainability of code. It is
+# useful when working with data manipulation and data transformation tasks.
 
-# Make a selection
-nhanes_long <- NHANES %>% select(Age, AgeDecade, Education, Poverty, Work,
-                                 LittleInterest, Depressed, BMI, Pulse,
-                                 BPSysAve, BPDiaAve, DaysPhysHlthBad,
-                                 PhysActiveDays)
-# Select 500 random indices
-rand_ind <- sample(seq_len(nrow(nhanes_long)), 500)
-nhanes <- nhanes_long[rand_ind, ]
+# The %>% operator takes the result of the expression on its left and passes it
+# as the first argument to the function on its right. This allows you to chain
+# together a sequence of operations on a data set or object.
 
+# For example:
+# Example 1:
+# library(dplyr) # Load the dplyr package (which uses %>%) # nolint
 
-# We also need the naniar package
-# Documentation of naniar:
+# result <- df %>%
+#   filter(age > 30) %>%   # Filter rows where age is greater than 30
+#   group_by(gender) %>%  # Group the data by gender
+#   summarize(mean_salary = mean(salary))  # Calculate the mean salary for each group # nolint
+
+# # 'result' now contains the result of these operations
+
+# Example 2:
+# nhanes_dataset <- nhanes_dataset %>%
+#   mutate(MAP = BPDiaAve + (1 / 3) * (BPSysAve - BPDiaAve)) # nolint
+
+### Subset of variables/features ----
+# We select only the following 13 features to be included in the dataset:
+nhanes_long_dataset <- NHANES %>%
+  select(Age, AgeDecade, Education, Poverty, Work, LittleInterest, Depressed,
+         BMI, Pulse, BPSysAve, BPDiaAve, DaysPhysHlthBad, PhysActiveDays)
+
+### Subset of rows ----
+# We then select 500 random observations to be included in the dataset
+rand_ind <- sample(seq_len(nrow(nhanes_long_dataset)), 500)
+nhanes_dataset <- nhanes_long_dataset[rand_ind, ]
+
+# STEP 2. Confirm the "missingness" in the Initial Dataset ----
+# We require the "naniar" package
+# Documentation:
+#   https://cran.r-project.org/package=naniar or
 #   https://www.rdocumentation.org/packages/naniar/versions/1.0.0
 
 if (!is.element("naniar", installed.packages()[, 1])) {
@@ -201,183 +253,201 @@ if (!is.element("naniar", installed.packages()[, 1])) {
 require("naniar")
 
 # Are there missing values in the dataset?
-any_na(nhanes)
-# How many?
-n_miss(nhanes)
-# What percentage?
-prop_miss(nhanes)
-# Which variables are affected?
-nhanes %>% is.na() %>% colSums()
+any_na(nhanes_dataset)
 
-# Get number of missing values per variable (n and %)
-miss_var_summary(nhanes)
-miss_var_table(nhanes)
-# Get number of missing values per participant (n and %)
-miss_case_summary(nhanes)
-miss_case_table(nhanes)
+# How many?
+n_miss(nhanes_dataset)
+
+# What is the percentage of missing data in the entire dataset?
+prop_miss(nhanes_dataset)
+
+# How many missing values does each variable have?
+nhanes_dataset %>% is.na() %>% colSums()
+
+# What is the number and percentage of missing values grouped by
+# each variable?
+miss_var_summary(nhanes_dataset)
+
+# What is the number and percentage of missing values grouped by
+# each observation?
+miss_case_summary(nhanes_dataset)
 
 # Which variables contain the most missing values?
-gg_miss_var(nhanes)
+gg_miss_var(nhanes_dataset)
+
+# We require the "ggplot2" package to create more appealing visualizations
 
 if (!is.element("ggplot2", installed.packages()[, 1])) {
   install.packages("ggplot2", dependencies = TRUE)
 }
 require("ggplot2")
-# Where are missing values located?
-vis_miss(nhanes) + theme(axis.text.x = element_text(angle = 80))
 
-# Which combinations of variables occur to be missing together?
-gg_miss_upset(nhanes)
+# Where are missing values located (the shaded regions in the plot)?
+vis_miss(nhanes_dataset) + theme(axis.text.x = element_text(angle = 80))
 
-# Create a heatmap of missingness broken down by age
-is.factor(nhanes$AgeDecade)
-gg_miss_fct(nhanes, fct = AgeDecade)
+# Which combinations of variables are missing together?
+gg_miss_upset(nhanes_dataset)
 
-nhanes <- nhanes %>% mutate(MaP = BPDiaAve + 1/3*(BPSysAve - BPDiaAve))
+# Create a heatmap of "missingness" broken down by "AgeDecade"
+# First, confirm that the "AgeDecade" variable is a categorical variable
+is.factor(nhanes_dataset$AgeDecade)
+# Second, create the visualization
+gg_miss_fct(nhanes_dataset, fct = AgeDecade)
+
+# We can also create a heatmap of "missingness" broken down by "Depressed"
+# First, confirm that the "Depressed" variable is a categorical variable
+is.factor(nhanes_dataset$Depressed)
+# Second, create the visualization
+gg_miss_fct(nhanes_dataset, fct = Depressed)
+
+
+# STEP 3. Use the MICE package to perform data imputation ----
 
 if (!is.element("mice", installed.packages()[, 1])) {
   install.packages("mice", dependencies = TRUE)
 }
 require("mice")
 
-# To arrive at good predictions for each of the target variable containing
-# missing values, we save the variables that are at least somewhat correlated
-# (r > 0.25) with it.
-pred_mat <- quickpred(nhanes, mincor = 0.25)
+# The "dplyr" package is known as "A Grammar of Data Manipulation". Think of
+# the DML sub-language of SQL.
 
+# We can use the dplyr::mutate() function inside the dplyr package to add new
+# variables that are functions of existing variables
 
-# mice
-nhanes_multimp <- mice(nhanes, m=10,meth='pmm',
-                       seed = 5, predictorMatrix = pred_mat)
+# In this case, it is used to create a new variable called,
+# "Median Arterial Pressure (MAP)"
+# Further reading:
+#   https://en.wikipedia.org/wiki/Mean_arterial_pressure
 
+nhanes_dataset <- nhanes_dataset %>%
+  mutate(MAP = BPDiaAve + (1 / 3) * (BPSysAve - BPDiaAve))
 
-# with
-lm_multimp <- with(nhanes_multimp, lm(MaP ~ BMI + PhysActiveDays))
-# pool
-lm_pooled <- pool(lm_multimp)
-# analyse pooled results - does the confidence interval include both directions?
-summary(lm_pooled, conf.int = TRUE, conf.level = 0.95)
+# MAP can be positively correlated with "BMI", unfortunately, BMI was reported
+# to have approximately 4.8% missing values.
 
-stripplot(nhanes_multimp,
-          MaP ~ BMI | .imp,
+# MAP can also be negatively correlated with "PhysActiveDays" which had
+# approximately 55% missing data.
+
+# We finally begin to make use of Multivariate Imputation by Chained
+# Equations (MICE). We use 11 multiple imputations.
+
+# To arrive at good predictions for each variable containing missing values, we
+# save the variables that are at least "somewhat correlated" (r > 0.3).
+somewhat_correlated_variables <- quickpred(nhanes_dataset, mincor = 0.3) # nolint
+
+# m = 11 Specifies that the imputation (filling in the missing data) will be
+#         performed 11 times (multiple times) to create several complete
+#         datasets before we pool the results to arrive at a more realistic
+#         final result. The larger the value of "m" and the larger the dataset,
+#         longer the data imputation will take.
+# seed = 7 Specifies that number 7 will be used to offset the random number
+#         generator used by mice. This is so that we get the same results
+#         each time we run MICE.
+# meth = "pmm" Specifies the imputation method. "pmm" stands for "Predictive
+#         Mean Matching" and it can be used for numeric data.
+#         Other methods include:
+#         1. "logreg": logistic regression imputation; used
+#            for binary categorical data
+#         2. "polyreg": Polytomous Regression Imputation for unordered
+#            categorical data with more than 2 categories, and
+#         3. "polr": Proportional Odds model for ordered categorical
+#            data with more than 2 categories.
+nhanes_dataset_mice <- mice(nhanes_dataset, m = 11, method = "pmm",
+                            seed = 7,
+                            predictorMatrix = somewhat_correlated_variables)
+
+# One can then train a model to predict MAP using BMI and PhysActiveDays or to
+# identify the p-Value and confidence intervals between MAP and BMI and
+# PhysActiveDays
+
+# We can use multiple scatter plots (a.k.a. strip-plots) to visualize how
+# random the imputed data is in each of the 11 datasets.
+stripplot(nhanes_dataset_mice,
+          MAP ~ BMI | .imp,
           pch = 20, cex = 1)
 
-# create imputed data to work with
-df <- mice::complete(nhanes_multimp, 1)
+stripplot(nhanes_dataset_mice,
+          MAP ~ PhysActiveDays | .imp,
+          pch = 20, cex = 1)
 
-miss_var_summary(df)
+## Impute the missing data ----
+# We then create imputed data for the final dataset using the mice::complete()
+# function in the mice package to fill in the missing data.
+nhanes_dataset_imputed <- mice::complete(nhanes_dataset_mice, 1)
 
+# STEP 4. Confirm the "missingness" in the Imputed Dataset ----
+# A textual confirmation that the dataset has no more missing values in any
+# feature:
+miss_var_summary(nhanes_dataset_imputed)
+
+# A visual confirmation that the dataset has no more missing values in any
+# feature:
 if (!is.element("Amelia", installed.packages()[, 1])) {
   install.packages("Amelia", dependencies = TRUE)
 }
 require("Amelia")
-Amelia::missmap(nhanes)
+Amelia::missmap(nhanes_dataset_imputed)
 
-Amelia::missmap(Soybean, col = c("red", "grey"), legend = TRUE)
+#########################
+# Are there missing values in the dataset?
+any_na(nhanes_dataset_imputed)
 
-# Random Sample ====
-# Create a random sample from the dataset
-library(mlbench)
-data(Soybean)
-# Although optional, we can create a smaller sample of 400 observations from the original 683 observations in the Soybean dataset
-random_index <- sample(1:nrow(Soybean),400)
-Soybean.sample <- Soybean[random_index,]
+# How many?
+n_miss(nhanes_dataset_imputed)
 
-# Show the missing values ====
-### missmap() function ====
-# This will show that roughly 10% of the data is missing
-missmap(Soybean)
-missmap(Soybean.sample)
+# What is the percentage of missing data in the entire dataset?
+prop_miss(nhanes_dataset_imputed)
 
-### vis_miss() function ====
-# This will also show roughly 10% of the data is missing in the whole dataset and also the percentage missing for each variable
-vis_miss(Soybean.sample) + theme(axis.text.x = element_text(angle=80))
+# How many missing values does each variable have?
+nhanes_dataset_imputed %>% is.na() %>% colSums()
 
-# If missing values are present (true/false) ====
-# Load the required packages called "naniar" and "dplyr"
-library(naniar)
-library(dplyr)
-# The `naniar::any_na()` function allows us to check if there are any missing values in the dataset.
-any_na(Soybean.sample)
+# What is the number and percentage of missing values grouped by
+# each variable?
+miss_var_summary(nhanes_dataset_imputed)
 
-# Count number of missing values ====
-# The `naniar::n_miss()` function allows us to count how many missing values we have in the dataset
-n_miss(Soybean.sample)
+# What is the number and percentage of missing values grouped by
+# each observation?
+miss_case_summary(nhanes_dataset_imputed)
 
-# Calculate the proportion of missing values ====
-# The `naniar::prop_miss()` function allows us to calculate the proportion of how many missing values we have in the dataset (multiply by 100 to get the percentage)
-prop_miss(Soybean.sample)
+# Which variables contain the most missing values?
+gg_miss_var(nhanes_dataset_imputed)
 
-# Count missing values per variable ====
-# We can also count how many missing values we have per variable in the dataset
-Soybean.sample %>% is.na() %>% colSums()
+# We require the "ggplot2" package to create more appealing visualizations
 
-# The number of missing values we have per variable in the dataset can also be presented as a percentage for each variable
-miss_var_summary(Soybean.sample)
+# Where are missing values located (the shaded regions in the plot)?
+vis_miss(nhanes_dataset_imputed) + theme(axis.text.x = element_text(angle = 80))
 
-# or (to print for all the 36 variables)
-print(as_tibble(miss_var_summary(Soybean.sample)), n=36)
+# Which combinations of variables are missing together?
 
-# Count missing values per observation ====
-# The number of missing values we have per observation in the dataset can also be presented as a sample
-miss_case_summary(Soybean.sample)
+# Note: The following command should give you an error stating that at least 2
+# variables should have missing data for the plot to be created.
+gg_miss_upset(nhanes_dataset_imputed)
 
-# Visualize percentage of missing values per variable ====
-# The number of missing values we have per variable in the dataset can also be presented visually
-gg_miss_var(Soybean.sample)
+# Create a heatmap of "missingness" broken down by "AgeDecade"
+# First, confirm that the "AgeDecade" variable is a categorical variable
+is.factor(nhanes_dataset_imputed$AgeDecade)
+# Second, create the visualization
+gg_miss_fct(nhanes_dataset_imputed, fct = AgeDecade)
 
-# The top 5 variables with the highest number of missing values are hail, sever, seed.tmt, lodging, and germ, each with 75% missing data.
+# We can also create a heatmap of "missingness" broken down by "Depressed"
+# First, confirm that the "Depressed" variable is a categorical variable
+is.factor(nhanes_dataset_imputed$Depressed)
+# Second, create the visualization
+gg_miss_fct(nhanes_dataset_imputed, fct = Depressed)
 
-# Visualize the Combination of variables that are missing together ====
-# This shows the combination of variables that are missing together, for example germ, hail, sever, seed.tmt, and lodging are all missing together in many observation
-gg_miss_upset(Soybean.sample)
+##############################################
 
-# Visualize a heatmap of "missingness" broken down by the Target Vairable (Class) ====
-is.factor(Soybean.sample$Class)
-gg_miss_fct(Soybean.sample, fct = Class)
+# An additional dataset that you can use to practice data imputation is the
+# "Soybean" dataset for agriculture. It is available in the mlbench package.
+# You can load it by executing the following code:
 
-# Identify correlated variables ====
-# Other variables that are correlated (r > 0.25) with the variable that has missing values are noted. These will be used to arrive at good predictions for the missing values. The results are stored in the prediction_matrix variable.
+# if (!is.element("mlbench", installed.packages()[, 1])) {
+#   install.packages("mlbench", dependencies = TRUE) # nolint
+# }
+# require("mlbench") # nolint
+# data(Soybean) # nolint
 
-prediction_matrix <- quickpred(Soybean.sample, mincor = 0.25)
-
-# Multivariate Imputation by Chained Equations (MICE) ====
-library(mice)
-
-# We then use the prediction matrix calculated in the previous step. We also set the number of times the imputation procedure should be run (8 times in this case) as well as the imputation method to use (Random Forest (rf) in this case).
-Soybean.mice <- mice(Soybean.sample, m=8,meth='rf', predictorMatrix = prediction_matrix)
-
-# A strip plot visualization allows us to see the progress of getting realistic data imputations from the first run to the last run of imputations
-stripplot(Soybean.mice,
-          Class ~ sever | .imp,
-          pch = 20, cex = 1)
-
-# Data Imputation ====
-# Finally, perform the data imputation
-Soybean.sample.imputed <-mice::complete(Soybean.mice,1)
-
-# Confirmation of Data Imputation ====
-## Show the missing values ====
-### missmap() function ====
-# This will show that 0% of the data is missing after the imputation
-missmap(Soybean)
-missmap(Soybean.sample)
-missmap(Soybean.sample.imputed)
-
-### vis_miss() function ====
-# This will also show roughly 10% of the data is missing in the whole dataset and also the percentage missing for each variable
-vis_miss(Soybean.sample) + theme(axis.text.x = element_text(angle=80))
-
-# This will also show 0% of the data is missing in the whole dataset and also the percentage missing for each variable is now 0%
-vis_miss(Soybean.sample.imputed) + theme(axis.text.x = element_text(angle=80))
-
-### Visualize a heatmap of "missingness" broken down by the Target Vairable (Class) ====
-gg_miss_fct(Soybean.sample.imputed, fct = Class)
-
-### Visualize percentage of missing values per variable ====
-gg_miss_var(Soybean.sample.imputed)
-
-### *** Deinitialization: Create a snapshot of the R environment ----
+# *** Deinitialization: Create a snapshot of the R environment ----
 # Lastly, as a follow-up to the initialization step, record the packages
 # installed and their sources in the lockfile so that other team-members can
 # use renv::restore() to re-install the same package version in their local
@@ -385,39 +455,33 @@ gg_miss_var(Soybean.sample.imputed)
 renv::snapshot()
 
 # References ----
-## Bevans, R. (2023). Sample Crop Data Dataset for ANOVA (Version 1) [Dataset]. Scribbr. https://www.scribbr.com/wp-content/uploads//2020/03/crop.data_.anova_.zip # nolint ----
-
-## Fisher, R. A. (1988). Iris [Dataset]. UCI Machine Learning Repository. https://archive.ics.uci.edu/dataset/53/iris # nolint ----
-
-## National Institute of Diabetes and Digestive and Kidney Diseases. (1999). Pima Indians Diabetes Dataset [Dataset]. UCI Machine Learning Repository. https://www.kaggle.com/datasets/uciml/pima-indians-diabetes-database # nolint ----
-
-## StatLib CMU. (1997). Boston Housing [Dataset]. StatLib Carnegie Mellon University. http://lib.stat.cmu.edu/datasets/boston_corrected.txt # nolint ----
+## United States National Center for Health Statistics (NCHS). (2015). The United States National Health and Nutrition Examination Study (NHANES) (2.1.0) [Dataset]. The Comprehensive R Archive Network [CRAN]. https://cran.r-project.org/package=NHANES # nolint ----
 
 # **Required Lab Work Submission** ----
 
 ## Part A ----
 # Create a new file called
-# "Lab4-Submission-ExposingTheStructureOfDataUsingDataTransforms.R".
-# Provide all the code you have used to perform data transformation on the
+# "Lab3-Submission-DataImputation.R".
+# Provide all the code you have used to perform data imputation on the
 # "BI1 Class Performance" dataset provided in class. Perform ALL the data
-# transformations that have been used in the
-# "Lab4-ExposingTheStructureOfDataUsingDataTransforms.R" file.
+# imputation steps that have been used in the
+# "Lab3-DataImputation.R" file.
 
 ## Part B ----
 # Upload *the link* to your
-# "Lab4-Submission-ExposingTheStructureOfDataUsingDataTransforms.R" hosted
+# "Lab3-Submission-DataImputation.R" hosted
 # on Github (do not upload the .R file itself) through the submission link
 # provided on eLearning.
 
 ## Part C ----
 # Create a markdown file called
-# "Lab4-Submission-ExposingTheStructureOfDataUsingDataTransforms.Rmd"
+# "Lab3-Submission-DataImputation.Rmd"
 # and place it inside the folder called "markdown".
 
 ## Part D ----
 # Knit the R markdown file using knitR in R Studio.
 # Upload *the link* to
-# "Lab4-Submission-ExposingTheStructureOfDataUsingDataTransforms.md"
+# "Lab3-Submission-DataImputation.md"
 # (not .Rmd) markdown file hosted on Github (do not upload the .Rmd or .md
 # markdown files) through the submission link
 # provided on eLearning.
