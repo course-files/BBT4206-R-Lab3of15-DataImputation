@@ -435,8 +435,7 @@ is.factor(nhanes_dataset_imputed$Depressed)
 # Second, create the visualization
 gg_miss_fct(nhanes_dataset_imputed, fct = Depressed)
 
-##############################################
-
+# Additional Dataset for Practice (the Soybean dataset) ----
 # An additional dataset that you can use to practice data imputation is the
 # "Soybean" dataset for agriculture. It is available in the mlbench package.
 # You can load it by executing the following code:
