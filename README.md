@@ -2,13 +2,15 @@
 
 These are course files (instructional materials) for the **BBT4206: Business Intelligence II** course using **R**.
 
-| **Attribute**         | Value                                                        |
-|-------------------------|-----------------------------------------------|
-| **Course Code**       | BBT4206                                                      |
-| **Course Name**       | Business Intelligence II                                     |
-| **Semester Duration** | 21<sup>st</sup> August 2023 to 28<sup>th</sup> November 2023 |
-| **Lecturer**          | Allan Omondi                                                 |
-| **Contact**           | aomondi [at] strathmore.edu                                  |
+| **Key**                                                               | Value                                                                                                                                                                              |
+|---------------|---------------------------------------------------------|
+| **Course Code**                                                       | BBT4206                                                                                                                                                                            |
+| **Course Name**                                                       | Business Intelligence II                                                                                                                                                           |
+| **URL**                                                               | <https://elearning.strathmore.edu/course/view.php?id=6599>                                                                                                                         |
+| **Semester Duration**                                                 | 21<sup>st</sup> August 2023 to 28<sup>th</sup> November 2023                                                                                                                       |
+| **Lecturer**                                                          | Allan Omondi                                                                                                                                                                       |
+| **Contact**                                                           | aomondi_at_strathmore_dot_edu                                                                                                                                                      |
+| **Recommended Citation (download [BibTex](RecommendedCitation.bib))** | Omondi, A. (2023). BBT4206-R-Lab2c-of15-SentimentAnalysis (Version 1) [R]. <https://github.com/course-files/BBT4206-R-Lab2c-of15-SentimentAnalysis> (Original work published 2023) |
 
 It is based on the following 9 steps of **Knowledge Discovery in Databases (KDD)**:
 
@@ -30,15 +32,19 @@ This involves describing data to better understand it. Through this understandin
 
 -   *Lab1-LoadingDatasets.R*
 
--   *Lab2-ExploratoryDataAnalysis.R*
+-   *Lab2a-ExploratoryDataAnalysisForQuantitativeData.R*
 
--   [*Lab3-DataImputation.R*](/Lab3-DataImputation.R)
+-   *Lab2b-ExploratoryDataAnalysisForQualitativeData.R*
+
+-   *Lab2c-SentimentAnalysis.R*
+
+-   [*Lab3-DataImputation.R*](Lab3-DataImputation.R)
 
 ## Step 4: Data Transformation
 
 This involves finding useful features that represent the data according to the goal of addressing the problem defined. In doing so, the structure of the data and the prediction problem is exposed to data mining algorithms. Finding useful attributes/features can also be done through dimensionality reduction (identifying the most significant and uncorrelated attributes). This can be performed by a data analyst.
 
--   *Lab4-ExposingTheStructureOfDataUsingDataTransforms.R*
+-   Lab4-ExposingtheStructureofDatausingDataTransforms.R
 
 ## Step 5: Selection of the Data Mining Task
 

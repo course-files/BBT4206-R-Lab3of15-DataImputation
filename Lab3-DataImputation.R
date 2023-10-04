@@ -6,7 +6,7 @@
 # Semester Duration: 21st August 2023 to 28th November 2023
 #
 # Lecturer: Allan Omondi
-# Contact: aomondi [at] strathmore.edu
+# Contact: aomondi_at_strathmore_dot_edu
 #
 # Note: The lecture contains both theory and practice. This file forms part of
 #       the practice. It has required lab work submissions that are graded for
@@ -15,6 +15,95 @@
 # License: GNU GPL-3.0-or-later
 # See LICENSE file for licensing information.
 # *****************************************************************************
+
+
+# **[OPTIONAL] Initialization: Install and use renv ----
+# The R Environment ("renv") package helps you create reproducible environments
+# for your R projects. This is helpful when working in teams because it makes
+# your R projects more isolated, portable and reproducible.
+
+# Further reading:
+#   Summary: https://rstudio.github.io/renv/
+#   More detailed article: https://rstudio.github.io/renv/articles/renv.html
+
+# "renv" It can be installed as follows:
+# if (!is.element("renv", installed.packages()[, 1])) {
+# install.packages("renv", dependencies = TRUE,
+# repos = "https://cloud.r-project.org") # nolint
+# }
+# require("renv") # nolint
+
+# Once installed, you can then use renv::init() to initialize renv in a new
+# project.
+
+# The prompt received after executing renv::init() is as shown below:
+# This project already has a lockfile. What would you like to do?
+
+# 1: Restore the project from the lockfile.
+# 2: Discard the lockfile and re-initialize the project.
+# 3: Activate the project without snapshotting or installing any packages.
+# 4: Abort project initialization.
+
+# Select option 1 to restore the project from the lockfile
+# renv::init() # nolint
+
+# This will set up a project library, containing all the packages you are
+# currently using. The packages (and all the metadata needed to reinstall
+# them) are recorded into a lockfile, renv.lock, and a .Rprofile ensures that
+# the library is used every time you open the project.
+
+# Consider a library as the location where packages are stored.
+# Execute the following command to list all the libraries available in your
+# computer:
+.libPaths()
+
+# One of the libraries should be a folder inside the project if you are using
+# renv
+
+# Then execute the following command to see which packages are available in
+# each library:
+lapply(.libPaths(), list.files)
+
+# This can also be configured using the RStudio GUI when you click the project
+# file, e.g., "BBT4206-R.Rproj" in the case of this project. Then
+# navigate to the "Environments" tab and select "Use renv with this project".
+
+# As you continue to work on your project, you can install and upgrade
+# packages, using either:
+# install.packages() and update.packages or
+# renv::install() and renv::update()
+
+# You can also clean up a project by removing unused packages using the
+# following command: renv::clean()
+
+# After you have confirmed that your code works as expected, use
+# renv::snapshot(), AT THE END, to record the packages and their
+# sources in the lockfile.
+
+# Later, if you need to share your code with someone else or run your code on
+# a new machine, your collaborator (or you) can call renv::restore() to
+# reinstall the specific package versions recorded in the lockfile.
+
+# [OPTIONAL]
+# Execute the following code to reinstall the specific package versions
+# recorded in the lockfile (restart R after executing the command):
+# renv::restore() # nolint
+
+# [OPTIONAL]
+# If you get several errors setting up renv and you prefer not to use it, then
+# you can deactivate it using the following command (restart R after executing
+# the command):
+# renv::deactivate() # nolint
+
+# If renv::restore() did not install the "languageserver" package (required to
+# use R for VS Code), then it can be installed manually as follows (restart R
+# after executing the command):
+
+if (!is.element("languageserver", installed.packages()[, 1])) {
+  install.packages("languageserver", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+require("languageserver")
 
 # Introduction ----
 # Data imputation, also known as missing data imputation, is a technique used
@@ -101,74 +190,6 @@
 
 # If the data are MAR or MNAR, imputing missing values is advisable.
 
-# *** Initialization: Install and use renv ----
-# The renv package helps you create reproducible environments for your R
-# projects. This is helpful when working in teams because it makes your R
-# projects more isolated, portable and reproducible.
-
-# Further reading:
-#   Summary: https://rstudio.github.io/renv/
-#   More detailed article: https://rstudio.github.io/renv/articles/renv.html
-
-# Install renv:
-if (!is.element("renv", installed.packages()[, 1])) {
-  install.packages("renv", dependencies = TRUE)
-}
-require("renv")
-
-# Use renv::init() to initialize renv in a new or existing project.
-
-# The prompt received after executing renv::init() is as shown below:
-
-# This project already has a lockfile. What would you like to do?
-# 1: Restore the project from the lockfile.
-# 2: Discard the lockfile and re-initialize the project.
-# 3: Activate the project without snapshotting or installing any packages.
-# 4: Abort project initialization.
-
-# Select option 1 to restore the project from the lockfile
-renv::init()
-
-# This will set up a project library, containing all the packages you are
-# currently using. The packages (and all the metadata needed to reinstall
-# them) are recorded into a lockfile, renv.lock, and a .Rprofile ensures that
-# the library is used every time you open that project.
-
-# This can also be configured using the RStudio GUI when you click the project
-# file, e.g., "BBT4206-R.Rproj" in the case of this project. Then
-# navigate to the "Environments" tab and select "Use renv with this project".
-
-# As you continue to work on your project, you can install and upgrade
-# packages, using either:
-# install.packages() and update.packages or
-# renv::install() and renv::update()
-renv::update()
-renv::install()
-
-# You can also clean up a project by removing unused packages using the
-# following command: renv::clean()
-
-# After you have confirmed that your code works as expected, use
-# renv::snapshot() to record the packages and their
-# sources in the lockfile.
-renv::snapshot()
-
-# Later, if you need to share your code with someone else or run your code on
-# a new machine, your collaborator (or you) can call renv::restore() to
-# reinstall the specific package versions recorded in the lockfile.
-
-# Execute the following code to reinstall the specific package versions
-# recorded in the lockfile:
-renv::restore()
-
-# One of the packages required to use R in VS Code is the "languageserver"
-# package. It can be installed manually as follows if you are not using the
-# renv::restore() command.
-if (!is.element("languageserver", installed.packages()[, 1])) {
-  install.packages("languageserver", dependencies = TRUE)
-}
-require("languageserver")
-
 # STEP 1. Load the Required Dataset ----
 # The dataset we will use (for educational purposes) is the US National Health
 # and Nutrition Examination Study (NHANES) dataset created from 1999 to 2004.
@@ -180,57 +201,58 @@ require("languageserver")
 
 # This requires the "NHANES" package available in R
 
+# STEP 1. Install and Load the Required Packages ----
+# The following packages should be installed and loaded before proceeding to the
+# subsequent steps.
+
+## NHANES ----
 if (!is.element("NHANES", installed.packages()[, 1])) {
-  install.packages("NHANES", dependencies = TRUE)
+  install.packages("NHANES", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
 }
 require("NHANES")
 
-## The "dplyr" Package ----
-# We will also require the "dplyr" package
-
-# "dplyr" is a grammar of *data manipulation*, providing a consistent set of
-# verbs that help you solve the most common data manipulation challenges:
-#   mutate() adds new variables that are functions of existing variables
-#   select() picks variables based on their names.
-#   filter() picks cases based on their values.
-#   summarise() reduces multiple values down to a single summary.
-#   arrange() changes the ordering of the rows.
-
-# Documentation of "dplyr":
-#   https://cran.r-project.org/package=dplyr or
-#   https://github.com/tidyverse/dplyr
-
+## dplyr ----
 if (!is.element("dplyr", installed.packages()[, 1])) {
-  install.packages("dplyr", dependencies = TRUE)
+  install.packages("dplyr", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
 }
 require("dplyr")
 
-## The Pipe Operator in the "dplyr" Package ----
-# In R, the %>% symbol represents the pipe operator.
-# The pipe operator is used for chaining or piping operations together in a
-# way that enhances the readability and maintainability of code. It is
-# useful when working with data manipulation and data transformation tasks.
+## naniar ----
+# Documentation:
+#   https://cran.r-project.org/package=naniar or
+#   https://www.rdocumentation.org/packages/naniar/versions/1.0.0
+if (!is.element("naniar", installed.packages()[, 1])) {
+  install.packages("naniar", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+require("naniar")
 
-# The %>% operator takes the result of the expression on its left and passes it
-# as the first argument to the function on its right. This allows you to chain
-# together a sequence of operations on a data set or object.
+## ggplot2 ----
+# We require the "ggplot2" package to create more appealing visualizations
+if (!is.element("ggplot2", installed.packages()[, 1])) {
+  install.packages("ggplot2", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+require("ggplot2")
 
-# For example:
-# Example 1:
-# library(dplyr) # Load the dplyr package (which uses %>%) # nolint
+## MICE ----
+# We use the MICE package to perform data imputation
+if (!is.element("mice", installed.packages()[, 1])) {
+  install.packages("mice", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+require("mice")
 
-# result <- df %>%
-#   filter(age > 30) %>%   # Filter rows where age is greater than 30
-#   group_by(gender) %>%  # Group the data by gender
-#   summarize(mean_salary = mean(salary))  # Calculate the mean salary for each group # nolint
+## Amelia ----
+if (!is.element("Amelia", installed.packages()[, 1])) {
+  install.packages("Amelia", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+require("Amelia")
 
-# # 'result' now contains the result of these operations
-
-# Example 2:
-# nhanes_dataset <- nhanes_dataset %>%
-#   mutate(MAP = BPDiaAve + (1 / 3) * (BPSysAve - BPDiaAve)) # nolint
-
-### Subset of variables/features ----
+# STEP 2. Customize the Visualizations, Tables, and Colour Scheme ----
 # We select only the following 13 features to be included in the dataset:
 nhanes_long_dataset <- NHANES %>%
   select(Age, AgeDecade, Education, Poverty, Work, LittleInterest, Depressed,
@@ -241,17 +263,7 @@ nhanes_long_dataset <- NHANES %>%
 rand_ind <- sample(seq_len(nrow(nhanes_long_dataset)), 500)
 nhanes_dataset <- nhanes_long_dataset[rand_ind, ]
 
-# STEP 2. Confirm the "missingness" in the Initial Dataset ----
-# We require the "naniar" package
-# Documentation:
-#   https://cran.r-project.org/package=naniar or
-#   https://www.rdocumentation.org/packages/naniar/versions/1.0.0
-
-if (!is.element("naniar", installed.packages()[, 1])) {
-  install.packages("naniar", dependencies = TRUE)
-}
-require("naniar")
-
+# STEP 3. Create a subset of the variables/features ----
 # Are there missing values in the dataset?
 any_na(nhanes_dataset)
 
@@ -275,13 +287,6 @@ miss_case_summary(nhanes_dataset)
 # Which variables contain the most missing values?
 gg_miss_var(nhanes_dataset)
 
-# We require the "ggplot2" package to create more appealing visualizations
-
-if (!is.element("ggplot2", installed.packages()[, 1])) {
-  install.packages("ggplot2", dependencies = TRUE)
-}
-require("ggplot2")
-
 # Where are missing values located (the shaded regions in the plot)?
 vis_miss(nhanes_dataset) + theme(axis.text.x = element_text(angle = 80))
 
@@ -300,17 +305,7 @@ is.factor(nhanes_dataset$Depressed)
 # Second, create the visualization
 gg_miss_fct(nhanes_dataset, fct = Depressed)
 
-
-# STEP 3. Use the MICE package to perform data imputation ----
-
-if (!is.element("mice", installed.packages()[, 1])) {
-  install.packages("mice", dependencies = TRUE)
-}
-require("mice")
-
-# The "dplyr" package is known as "A Grammar of Data Manipulation". Think of
-# the DML sub-language of SQL.
-
+# STEP 4. Use the MICE package to perform data imputation ----
 # We can use the dplyr::mutate() function inside the dplyr package to add new
 # variables that are functions of existing variables
 
@@ -339,7 +334,7 @@ somewhat_correlated_variables <- quickpred(nhanes_dataset, mincor = 0.3) # nolin
 #         performed 11 times (multiple times) to create several complete
 #         datasets before we pool the results to arrive at a more realistic
 #         final result. The larger the value of "m" and the larger the dataset,
-#         longer the data imputation will take.
+#         the longer the data imputation will take.
 # seed = 7 Specifies that number 7 will be used to offset the random number
 #         generator used by mice. This is so that we get the same results
 #         each time we run MICE.
@@ -375,17 +370,13 @@ stripplot(nhanes_dataset_mice,
 # function in the mice package to fill in the missing data.
 nhanes_dataset_imputed <- mice::complete(nhanes_dataset_mice, 1)
 
-# STEP 4. Confirm the "missingness" in the Imputed Dataset ----
+# STEP 5. Confirm the "missingness" in the Imputed Dataset ----
 # A textual confirmation that the dataset has no more missing values in any
 # feature:
 miss_var_summary(nhanes_dataset_imputed)
 
 # A visual confirmation that the dataset has no more missing values in any
 # feature:
-if (!is.element("Amelia", installed.packages()[, 1])) {
-  install.packages("Amelia", dependencies = TRUE)
-}
-require("Amelia")
 Amelia::missmap(nhanes_dataset_imputed)
 
 #########################
@@ -446,12 +437,12 @@ gg_miss_fct(nhanes_dataset_imputed, fct = Depressed)
 # require("mlbench") # nolint
 # data(Soybean) # nolint
 
-# *** Deinitialization: Create a snapshot of the R environment ----
+# [OPTIONAL] **Deinitialization: Create a snapshot of the R environment ----
 # Lastly, as a follow-up to the initialization step, record the packages
 # installed and their sources in the lockfile so that other team-members can
 # use renv::restore() to re-install the same package version in their local
 # machine during their initialization step.
-renv::snapshot()
+# renv::snapshot() # nolint
 
 # References ----
 ## United States National Center for Health Statistics (NCHS). (2015). The United States National Health and Nutrition Examination Study (NHANES) (2.1.0) [Dataset]. The Comprehensive R Archive Network [CRAN]. https://cran.r-project.org/package=NHANES # nolint ----
@@ -462,7 +453,7 @@ renv::snapshot()
 # Create a new file called
 # "Lab3-Submission-DataImputation.R".
 # Provide all the code you have used to perform data imputation on the
-# "BI1 Class Performance" dataset provided in class. Perform ALL the data
+# "BI1 Student Performance" dataset provided in class. Perform ALL the data
 # imputation steps that have been used in the
 # "Lab3-DataImputation.R" file.
 
