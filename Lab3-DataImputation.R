@@ -190,7 +190,11 @@ require("languageserver")
 
 # If the data are MAR or MNAR, imputing missing values is advisable.
 
-# STEP 1. Load the Required Dataset ----
+# STEP 1. Install and Load the Required Packages ----
+# The following packages should be installed and loaded before proceeding to the
+# subsequent steps.
+
+## NHANES ----
 # The dataset we will use (for educational purposes) is the US National Health
 # and Nutrition Examination Study (NHANES) dataset created from 1999 to 2004.
 
@@ -201,11 +205,6 @@ require("languageserver")
 
 # This requires the "NHANES" package available in R
 
-# STEP 1. Install and Load the Required Packages ----
-# The following packages should be installed and loaded before proceeding to the
-# subsequent steps.
-
-## NHANES ----
 if (!is.element("NHANES", installed.packages()[, 1])) {
   install.packages("NHANES", dependencies = TRUE,
                    repos = "https://cloud.r-project.org")
@@ -252,7 +251,7 @@ if (!is.element("Amelia", installed.packages()[, 1])) {
 }
 require("Amelia")
 
-# STEP 2. Customize the Visualizations, Tables, and Colour Scheme ----
+# STEP 2. Create a subset of the variables/features ----
 # We select only the following 13 features to be included in the dataset:
 nhanes_long_dataset <- NHANES %>%
   select(Age, AgeDecade, Education, Poverty, Work, LittleInterest, Depressed,
@@ -263,7 +262,7 @@ nhanes_long_dataset <- NHANES %>%
 rand_ind <- sample(seq_len(nrow(nhanes_long_dataset)), 500)
 nhanes_dataset <- nhanes_long_dataset[rand_ind, ]
 
-# STEP 3. Create a subset of the variables/features ----
+# STEP 3. Confirm the "missingness" in the Dataset before Imputation ----
 # Are there missing values in the dataset?
 any_na(nhanes_dataset)
 
