@@ -10,7 +10,7 @@ These are course files (instructional materials) for the **BBT4206: Business Int
 | **Semester Duration**                                                 | 21<sup>st</sup> August 2023 to 28<sup>th</sup> November 2023                                                                                                                       |
 | **Lecturer**                                                          | Allan Omondi                                                                                                                                                                       |
 | **Contact**                                                           | aomondi_at_strathmore_dot_edu                                                                                                                                                      |
-| **Recommended Citation (download [BibTex](RecommendedCitation.bib))** | Omondi, A. (2023). BBT4206-R-Lab2c-of15-SentimentAnalysis (Version 1) [R]. <https://github.com/course-files/BBT4206-R-Lab2c-of15-SentimentAnalysis> (Original work published 2023) |
+| **Recommended Citation (download [BibTex](RecommendedCitation.bib))** | Omondi, A. (2023). BBT4206-R-Lab3of15-DataImputation (Version 1) [R]. https://github.com/course-files/BBT4206-R-Lab3of15-DataImputation (Original work published 2023) |
 
 It is based on the following 9 steps of **Knowledge Discovery in Databases (KDD)**:
 
